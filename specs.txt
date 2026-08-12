@@ -1,0 +1,218 @@
+# TabBack — Product Specification (PRD-Ready)
+
+> Brand: **TabBack**
+> Tagline: "Track your spending. Split the bill. Get paid back."
+> Former candidate name: MoneyLens (reserved for the Analytics tab label).
+> This document is the single source of truth for the MVP. Every requirement below reflects decisions made during the design review.
+
+---
+
+## 1. Product Goal
+
+A single place for one user to:
+
+- Record daily expenses in under 10 seconds.
+- Understand monthly/yearly spending by category, trend, and comparison.
+- Split expenses with friends (equal or custom shares).
+- Know exactly who owes them money and whom they owe, with no manual balance math.
+- Chase pending payments with friendly reminders and record when debts are settled.
+
+The differentiator: shared-expense tracking that makes sure users **collect money they are owed** — expense tracker + spending analytics + lightweight IOU manager, without financial jargon.
+
+## 2. Target User
+
+A person who wants one place to record expenses, see where their money goes, manage shared bills with friends, and never forget who owes them money or forget what they owe.
+
+## 3. User Stories
+
+1. As a user, I want to sign up with email/password or Google, so that my data is private and synced.
+2. As a user, I want my session to persist, so that I don't sign in every visit.
+3. As a user, I want a dashboard that shows this month's and this year's total spending, so that I instantly know my burn rate.
+4. As a user, I want the dashboard to compare this month's spending with last month, so that I can spot trend changes.
+5. As a user, I want a category breakdown on the dashboard, so that I know where my money goes.
+6. As a user, I want recent expenses listed on the dashboard, so that I can verify entries without navigation.
+7. As a user, I want the dashboard to show total outstanding money others owe me and total I owe others, so that I never forget an IOU.
+8. As a user, I want a prominent "+ Add Expense" action always reachable, so that entry is fast.
+9. As a user, I want to create an expense with amount, description, date, category, payment method, and optional notes, so that I can record spend accurately.
+10. As a user, I want to attach an optional receipt image/PDF to an expense, so that I can keep proof of purchase.
+11. As a user, I want to edit an expense's description, category, date, and notes after creation, so that I can fix mistakes.
+12. As a user, I want to edit an expense's amount, payment method, and splits only while nothing has been settled on it, so that settlement history stays truthful.
+13. As a user, I want to delete an expense (removing splits) when no settlements exist on it, so that mistakes can be fully undone.
+14. As a user, I want to see a locked explanation when an expense has settlements, so that I understand why fields are read-only.
+15. As a user, I want default categories (Food, Groceries, Transport, Travel, Bills, Rent, Shopping, Entertainment, Health, Education, Work, Other), so that entry is fast.
+16. As a user, I want to create and manage my own categories (evenly), so that the taxonomy matches my life.
+17. As a user, I want to search expenses by description, category, or person, so that I can find past entries.
+18. As a user, I want to filter the expense history by date range, category, amount, payment method, person, split/non-split, and paid/pending, so that analysis is precise.
+19. As a user, I want to split an expense with friends equal share, so that I can split a lunch tab in one tap.
+20. As a user, I want to split an expense with custom amounts, auto-distributed like GPay when I add participants, so that uneven shares are quick to enter.
+21. As a user, I want my own share of a split to be the remainder automatically (and be allowed to be 0), so that "I paid the whole round" is supported.
+22. As a user, I want to prevent the sum of participants' shares from exceeding the expense amount, so that splits stay consistent.
+23. As a user, I want to quick-add a person right inside the split form, so that I never block entry to create contacts.
+24. As a user, I want a People page listing each person's outstanding balances, net balance, expense history, and settlement history, so that I can see the full picture per friend.
+25. As a user, I want to log a manual IOU in either direction (– I paid something for me / they paid something for me), so that debts not tied to an expense are tracked.
+26. As a user, I want a Money Owed page with two lists (Money to receive / Money to pay) showing person, amount, related expense, date, days pending, so that I know exactly what's outstanding.
+27. As a user, I want a **Mark as Paid** action on an outstanding debt, so that settling takes seconds.
+28. As a user, I want open payments to be partial — I can record ₹600 of a ₹1,000 share — so that reality is represented.
+29. As a user, I want settlement history stored per person with method/date, and separate from the expense itself, so that the trail is clean. **Never modify the original expense on settlement.**
+30. As a user, I want to undo a mistaken settlement (delete it), so that balances re-derive correctly.
+31. As a user, I want a Reminder on an outstanding debt that drafts a friendly message and opens a WhatsApp conversation with the person when their phone number is saved, so that I can collect money without awkward math.
+32. As a user, I want the same reminder to work via clipboard when no phone is stored, and to be recorded in history, so that nothing is lost.
+33. As a user, I want optional due dates on splits, so that "pending for X days" anchors to the due date when set.
+34. As a user, I want monthly analytics (total, category split, daily & weekly trend, average, highest expense, prior-month comparison), so that I can review a month.
+35. As a user, I want yearly analytics (total, monthly chart, average, highest month, category trends, prior-year comparison), so that I can review a year.
+36. As a user, I want to switch between month / quarter / year views, so that I can change granularity.
+37. As a user, I want a monthly budget (overall, optionally per category) with spent / remaining / % used and a progress bar, so that I can stay on track.
+38. As a user, I want budget warnings at 75%, 90%, and 100% shown in-app, so that I am nudged before overspending.
+39. As a user, I want a mobile-first layout with bottom tab navigation and a center add button, so that the app feels native on my phone.
+40. As a user, I want the app responsive on desktop with a sidebar, so that I can also use it on a laptop.
+41. As a user, I want all money figures to display in ₹ with exactly 2 decimals, never floating-point artifacts, so that I can trust the numbers.
+42. As a user, I want my data (including uploaded receipts) accessible only to me, so that privacy is assumed.
+
+---
+
+## 4. Functional Requirements by Module
+
+### A. Auth (Next.js + Supabase Auth)
+- Email/password and Google OAuth. Sessions persisted; all pages behind auth except auth pages.
+
+### B. Dashboard
+Cards: this month's total, this year's total, month-over-month comparison (% vs previous month), category breakdown, recent expenses, outstanding to receive (sum), outstanding to pay (sum), budget status with progress, pending split payments with quick actions (Remind / Mark as Paid).
+- **Gross totals on dashboard (to receive and to pay are separate numbers); net only on the People page per person.**
+- Budget warnings render in-app on the dashboard at 75 / 90 / 100%.
+
+### C. Expenses & Categories
+- Fields: amount, description, date (local calendar date, default today), category, payment method, notes, optional receipt, createdAt, updatedAt.
+- Payment methods (fixed enum): Cash, Bank transfer, UPI, Other.
+- Categories: seeded defaults (12) + user-defined (CRUD).
+- **Tags: explicitly OUT of MVP scope.**
+- Recounts: receipt upload → private Supabase Storage bucket (images/PDF, ≤5 MB), RLS-scoped URL access.
+- Lock rules (match the agreed plan): while any settlement exists on a split of the expense → editing money-bearing/method/splits disabled with inline reason; description/category/date/notes remain editable. Delete blocked while settlements exist → user deletes settlements first (explicit two-step undo). Expenses without settlements: fully editable/deletable.
+
+### D. Splitting (GPay-style)
+- Split types MVP: equal and custom amounts. (Percent/shares & equal+ — future.)
+- One: **auto-distribute:** participants added one by one; each added person's share auto-computed as total ÷ participant count; each row is editable; the user's own share is derived as  total − Σ(participant shares appears live, may be 0; must be ≥ 0 (sum of participants ≤ expense total).**
+- Only *other people* have split rows (the user is never a split row — their share is the remainder and implicitly already paid on a == the split all of him as he wants).
+- Participants statuses: derived (see Ledger).
+- Optional per-split due date.
+- Splits decisions never alter the expense amount itself.
+
+### E. People
+- Quick-add in split form (name + optional phone) + people page CRUD (rename, phone/email edit, delete).
+- People page shows: name, contact info, "owes you", "you owe them", Net, expense history, settlement history.
+- Net per person = receivable − payable (single displayed number).
+
+### F. IOUs (manual debts)
+- User can create a manual IOU: person, amount, direction (they owe me / I owe them), optional note, date. Tracked and settleable like splits. From this, "You owe Rahul ₹500" scenarios are represented (splits alone can never produce user-owes).
+
+### G. Money Owed (toReceive / toPay)
+- Each row: person, amount, related expense description, date, days pending (anchored to dueDate if set, else expense date), status. Actions: Remind, Mark as Paid.
+
+### H. Settlements
+- A settlement **attaches to a specific split/IOU**; amount can be any positive value ≤ remaining; multiple settlements per debt allowed;
+- **Split status is derived** (paid ⇔ remaining = 0) — never stored, never drifts.
+- A settlement never modifies the expense row — append-only records referencing expenseId/splitId + personId + amount + direction + paymentMethod + date + notes + createdAt.
+- Settlement list supports delete/undo; balances re-derive.
+
+### I. Reminders
+- "Remind" on a debt → friendly message draft ("Hi {name}! Just a gentle nudge on ₹{amount} from {expense} — no rush, let me know when it's sent 🟢") with copyable text and a wa.me deep link when the person's phone is stored (index, text). No phone → clipboard only.
+- Logs a reminder record (person, debt, sentAt) shown in the person page & settlement history area. Manual delivery only in MVP (no auto/batch, no API integrations).
+
+### J. Analytics (MoneyLens tab)
+- Views: Month / Quarter / Year.
+- Monthly: total, category break, daily vs weekly trend, average, highest expense, comparison vs previous month.
+- Yearly: total, monthly chart, average monthly, highest month, category trend, comparison vs previous year.
+- **All aggregation servers-side via SQL views (Server RPC):** each dashboard card & chart = one RPC call (monthTotals, categoryBreakdown, trend, comparison, budgetStatus, outstandingSummaries). Data never leaves the server.
+- **Date-bucketing in the browser's local timezone:** client computes start/end local dates → passes to RPC; server stores/ignores timezone assumptions; expense date is a calendar date.
+
+---
+
+## 5. Business Logic — Ledger Invariants
+
+1. Money stored as: Postgres `numeric(12,2)`; JS-side money math rounds to 2 decimals at every boundary (`round2`).
+2. `remaining(split) = split.amount − sum(settlements on that split)`, clamped ≥ 0.
+3. Split status derived: `pending` iff remaining > 0 else `paid`.
+4. User-to-person: receivable = remaining splits where user paid + manual IOUs (they owe me) − (sum of sum) — displayed **per person net**, **dashboard gross**.
+5. User-owes arises only from manual IOUs (I owe) — splits never produce user-owed.
+6. Settlements cannot exceed the remaining amount (capped per debt); excess blocked at UI + RPC.
+7. Splits validation: Σ participant shares ≤ expense amount.
+8. Delete/undoed settlements re-derive. All records: money immutable in the expense once any settlement exists (module lock).
+
+---
+
+## 6. Data Model
+
+Core entities (Supabase tables): user (Supabase auth), expenses, categories, people, splits, settlements, reminders, budgets, ious (integrated into splits as debts), notifications (out of MVP).
+
+- **expenses**: id, user_id, amount numeric(12,2), category_id, date, payment_method, notes, receipt_path, created_at, updated_at.
+- **categories**: id, user_id (null = system seed), name.
+- **people**: id, user_id, name, phone, email.
+- **splits**: id, user_id, expense_id, person_id, amount numeric(12,2), due_date, settled_at (derived display). (Status derived, not stored.)
+- **ious**: id, user_id, person_id, amount numeric(12,2), direction (to_receive|to_pay), date, notes.
+- **settlements**: id, user_id, person_id, debt_type (split|iou), debt_id, amount, direction, payment_method, date, notes, created_at. Append-only.
+- **reminders**: id, user_id, debt_type, debt_id, person_id, sent_at. (template regenerated on demand — not stored.)
+- **budgets**: id, user_id, month (YYYY-MM), overall_limit, category_limits (or normalized).
+- **receipts**: stored in private Supabase Storage; receipt URL on expense for view only.
+
+---
+
+## 7. Architecture & Implementation Decisions
+
+- **Stack:** Next.js (App Router, TypeScript), Supabase (Postgres, Auth, Storage, Serverless SQL RPCs), deployed on Vercel.
+- **Auth:** Supabase Auth email/password + Google OAuth; row-level security (RLS) on every table scoping to `auth.uid()`.
+- **All data reads go through Postgres (SQL/via RPC):** no client-side guards/watching; analytics tables via SQL RPC dataset SQL; debt photos aggregated via RPC.
+- **Money:** `numeric(12,2)`; single currency ₹; no multi-currency plumbing.
+- **Add Expense flow:** dedicated /expenses/new page; FAB + bottom tab bar on mobile, sidebar on desktop. Target: entry < 10 s for a normal transaction.
+- **Module list (buildable in parallel):**
+  1. `ledger` — pure money/balance/derived-status logic (remaining, net, gross, round2, clamped settlements, split validation) — fully unit-testable, no I/O.
+  2. sql/rpc-analytics — server SQL functions surrounding RLS.
+  3. `expense + split` — CRUD, lock rules, GPay split-form math, quick-add person.
+  4. `people + iou` — people CRUD, IOUs, Money Owed views, settlement action.
+  5. `reminders` — message template + wa.me link + records.
+  6. `budgets` — warning thresholds (pure) + progress wiring.
+  7. `app shell` — layout, auth guard, nav, receipts storage.
+
+---
+
+## 8. Testing Strategy
+
+- Unit tests for: split equal/custom distribution (including the auto-distribute remainder rule), ledger (remaining, net, gross, settlement caps, status derivation), warning thresholds 75/90/100, reminder templates (format, amount, rounding) — every pure module in its own test, no Supabase dependency.
+- RPCs: covered by bounded-seed-fixture tests (money rounded, timezone buckets).
+- App/E2E rendering: deferred until MVP feature complete (manual QA first; keep screens simple).
+
+---
+
+## 9. MVP Scope (Must Have)
+
+Dependencies (final products):
+- Google-email/password auth, session persistence
+- Dashboard incl. month total, year total, MoM comparison, category breakdown, recent expenses, gross receivable/payable, budget status, pending list w/ quick actions (from MVP Are.)
+- Expenses: CRUD, lock rules, categories (seed + custom), receipt upload (private)
+- Expense history: search + all filters (date, category, amount, method, person, split filter, paid/pending)
+- Splitting: equal + custom GPay distribution
+- People: CRUD + quick-add
+- IOUs: both directions, manual entry
+- Money owed: to-receive / to-pay lists, days outstanding, Mark as Paid, settlement history
+- Settlement: attributed, partial, capped, undo
+- Reminders: template + wa.me/copy + record
+- Monthly and yearly analytics (Month/Quarter/Year views, charts)
+- Basic budgets: overall + per-category, progress, 75/90/100 warnings
+- Responsive mobile-first layout, bottom nav, FAB
+- RLS on all tables
+
+## 10. Out of Scope for MVP (Can Wait)
+
+Receipt OCR, bank integrations, transaction imports, UPI integration, WhatsApp Business API / emails push notifications, notification center, advanced budgets & recurring expenses, multiple currencies, group/trip management, tags, AI insights, sharing/multi-user expenses.
+
+## 11. Success Criteria
+
+1. Adding a normal expense takes under 10 seconds.
+2. User can answer: How much did I spend? Where? Who owes me? Whom do I owe? How much this month/year?
+3. Balances always reconcile — no drift between history and current remaining amounts (derived).
+4. Works beautifully on a phone (mobile-first).
+5. No financial jargon anywhere.
+
+## 12. Notes
+
+- Analytics tab may be labeled "MoneyLens" internally.
+- Budgets calculations reuse the same SQL aggregation as analytics (build once, use twice).
+- User constantly: reminders should be friendly, non-aggressive; small test of the product's tone.

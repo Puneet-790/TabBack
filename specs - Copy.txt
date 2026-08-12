@@ -1,0 +1,446 @@
+Product Name: MoneyLens
+
+Expense & Split Tracking Web App — Product Specification
+1. Product Goal
+Build a modern web application that helps users:
+
+Track all personal expenses.
+Understand spending patterns by month, year, and category.
+Set and monitor spending budgets.
+Split expenses with friends.
+Track money owed by friends.
+Track money the user owes to others.
+Send reminders for pending payments.
+Mark debts as settled and maintain settlement history.
+The application should be simple, fast, mobile-friendly, and easy to use.
+
+Suggested Product Name
+TabBack
+
+Tagline:
+"Track your spending. Split the bill. Get paid back."
+
+2. Target User
+A person who wants a single place to:
+
+Record daily expenses.
+Analyse monthly/yearly spending.
+Understand where their money goes.
+Manage shared expenses with friends.
+Remember who owes them money.
+Avoid manually calculating balances.
+3. Core Features
+A. Dashboard
+The dashboard should provide an overview of the user's financial activity.
+
+Display:
+
+Total spending this month.
+Total spending this year.
+Spending compared with previous month.
+Spending by category.
+Recent expenses.
+Total money owed to the user.
+Total money the user owes others.
+Pending split payments.
+Budget status.
+The dashboard should provide quick access to:
+
++ Add Expense
+
+B. Expense Management
+Users can create, edit, delete, and view expenses.
+
+Each expense contains:
+
+Amount
+Description
+Date
+Category
+Payment method
+Notes
+Optional receipt
+Optional tags
+Created/updated timestamp
+Default categories:
+
+Food
+Groceries
+Transport
+Travel
+Bills
+Rent
+Shopping
+Entertainment
+Health
+Education
+Work
+Other
+Users should be able to create custom categories.
+
+C. Expense History
+Provide a searchable and filterable list of all expenses.
+
+Filters:
+
+Date range
+Category
+Amount
+Payment method
+Person
+Split/non-split
+Paid/pending
+Users should be able to search expenses by description, category, or person.
+
+4. Expense Splitting
+An expense can optionally be split between multiple people.
+
+Example:
+
+Dinner = ₹3,000
+
+Participants:
+
+User → ₹1,000
+Rahul → ₹1,000
+Aman → ₹1,000
+The system should calculate:
+
+₹2,000 owed to the user.
+
+Supported split types
+For MVP:
+
+Equal split
+Custom amount
+Future:
+
+Percentage
+Shares
+Each participant should have a payment status:
+
+Pending
+Paid
+5. People / Friends
+Users can maintain a simple list of people they frequently split expenses with.
+
+For each person show:
+
+Name
+Contact information (optional)
+Total they owe the user
+Total the user owes them
+Net balance
+Expense history
+Settlement history
+Example:
+
+Rahul
+
+Owes you: ₹1,850
+You owe Rahul: ₹500
+
+Net: Rahul owes you ₹1,350
+
+6. Money Owed / IOU Tracking
+Provide a dedicated section for tracking outstanding money.
+
+Money to receive
+Show:
+
+Person
+Amount
+Related expense
+Date
+Number of days pending
+Payment status
+Example:
+
+Rahul
+₹600
+Dinner - Aug 5
+Pending for 4 days
+
+[Remind] [Mark as Paid]
+
+Money to pay
+Show similar information for money the user owes other people.
+
+7. Settlements
+When a person pays their share, the user can mark the amount as settled.
+
+Settlement should record:
+
+Person
+Amount
+Date
+Payment method
+Optional note
+Supported payment methods:
+
+Cash
+Bank transfer
+UPI
+Other
+Important:
+
+Never modify the original expense when a settlement happens.
+
+Keep expenses and settlements as separate records.
+
+8. Reminders
+Users should be able to remind people about pending payments.
+
+MVP:
+
+Manual reminder
+Reminder status
+Optional due date
+Future:
+
+Automatic reminders after X days
+Custom reminder schedules
+Email/push/WhatsApp integrations
+Reminder messages should be friendly and non-aggressive.
+
+9. Analytics
+Provide visual analytics for:
+
+Monthly
+Total spending
+Spending by category
+Daily/weekly spending trend
+Average spending
+Highest expense
+Comparison with previous month
+Yearly
+Total yearly spending
+Monthly spending chart
+Average monthly spending
+Highest spending month
+Category trends
+Comparison with previous year
+Users should be able to switch between:
+
+Month / Quarter / Year
+
+Charts should be simple and easy to understand.
+
+10. Budgets
+Users can optionally create budgets.
+
+Example:
+
+Monthly budget: ₹40,000
+
+Food: ₹8,000
+Shopping: ₹5,000
+Entertainment: ₹3,000
+
+Show:
+
+Amount spent
+Remaining amount
+Percentage used
+Progress indicator
+Budget warnings at:
+
+75%
+90%
+100%
+11. Recurring Expenses
+Support recurring expenses such as:
+
+Rent
+Subscriptions
+Insurance
+Internet
+Phone bills
+EMIs
+A recurring expense should have:
+
+Amount
+Description
+Category
+Frequency
+Next occurrence
+Start/end date
+Active/inactive status
+This can be implemented after the MVP.
+
+12. Notifications
+Useful notifications include:
+
+Budget nearing limit.
+Recurring expense coming up.
+Friend has an outstanding payment.
+Pending payment reminder.
+Weekly/monthly spending summary.
+Notifications should not be excessive.
+
+13. Navigation
+Use a simple application layout:
+
+Dashboard
+Expenses
+Analytics
+People
+Money Owed
+Budgets
+Settings
+
+A prominent:
+
++ Add Expense
+
+button should always be easily accessible.
+
+14. Data Model
+Minimum entities:
+
+User
+Expense
+Category
+Person
+Split
+Settlement
+Budget
+RecurringExpense
+Notification
+
+Expense
+id
+userId
+amount
+description
+categoryId
+date
+paymentMethod
+notes
+receiptUrl
+createdAt
+updatedAt
+
+Split
+id
+expenseId
+personId
+amount
+status
+dueDate
+settledAt
+
+Person
+id
+userId
+name
+email
+phone
+
+Settlement
+id
+personId
+amount
+direction
+paymentMethod
+date
+notes
+
+15. Important Business Logic
+The system must correctly calculate balances.
+
+Example:
+
+User pays ₹3,000.
+
+Three people owe:
+
+Rahul → ₹1,000
+Aman  → ₹1,000
+Neha  → ₹1,000
+
+Total receivable:
+
+₹3,000
+
+If Rahul pays ₹1,000:
+
+Rahul → Settled
+Aman  → ₹1,000 pending
+Neha  → ₹1,000 pending
+
+Total receivable:
+
+₹2,000
+
+The original ₹3,000 expense remains unchanged.
+
+16. MVP Requirements
+The first version should ONLY focus on:
+
+Must Have
+User authentication
+Dashboard
+Add/edit/delete expenses
+Expense categories
+Expense history
+Search/filter
+Add people
+Split expenses
+Equal/custom split
+Track who owes whom
+Mark payment as settled
+Settlement history
+Monthly analytics
+Yearly analytics
+Basic spending charts
+Basic reminders
+Responsive design
+Can Wait
+Receipt OCR
+Bank integrations
+Automatic transaction imports
+UPI integration
+WhatsApp reminders
+Advanced budgets
+Recurring expenses
+Multiple currencies
+Group/trip management
+AI financial insights
+17. UX Principles
+The application should be:
+
+Simple
+Fast
+Mobile-first/responsive
+Minimal
+Data-focused
+Easy to understand
+Adding an expense should take less than 10 seconds for a normal transaction.
+
+Avoid complicated financial terminology.
+
+The user should always be able to answer:
+
+"How much did I spend?"
+
+"Where did I spend it?"
+
+"Who owes me money?"
+
+"Whom do I owe?"
+
+"How much have I spent this month/year?"
+
+18. Final Product Goal
+Build a personal finance application that combines:
+
+Expense Tracking + Spending Analytics + Expense Splitting + IOU/Settlement Tracking
+
+The key differentiator is the ability to track shared expenses and make sure users don't forget to collect money owed by friends.
+
+The product should feel like a combination of:
+
+Personal expense tracker + spending analytics + lightweight IOU manager
+
+but remain simple enough for everyday use.
