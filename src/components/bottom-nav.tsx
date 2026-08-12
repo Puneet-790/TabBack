@@ -19,21 +19,21 @@ function TabLink({ item, pathname }: { item: NavItem; pathname: string }) {
       }`}
     >
       <Icon name={item.icon} className="h-6 w-6" />
-      <span className="text-[11px] font-medium">{item.label}</span>
+      <span className="max-w-full truncate px-0.5 text-[11px] font-medium">{item.label}</span>
     </Link>
   );
 }
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [home, expenses, moneyOwed, analytics] = primaryNav;
+  const [home, expenses, people, moneyOwed, analytics] = primaryNav;
 
   return (
     <nav
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-tabbar border-t border-border bg-surface shadow-nav pb-[env(safe-area-inset-bottom)] md:hidden"
     >
-      <ul className="grid grid-cols-5">
+      <ul className="grid grid-cols-6">
         <li>
           <TabLink item={home} pathname={pathname} />
         </li>
@@ -51,6 +51,9 @@ export function BottomNav() {
             </span>
             <span className="-mt-2 text-[11px] font-medium">Add</span>
           </Link>
+        </li>
+        <li>
+          <TabLink item={people} pathname={pathname} />
         </li>
         <li>
           <TabLink item={moneyOwed} pathname={pathname} />
