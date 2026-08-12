@@ -26,19 +26,23 @@ function TabLink({ item, pathname }: { item: NavItem; pathname: string }) {
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [home, expenses, people, moneyOwed, analytics] = primaryNav;
+  const [home, expenses, people, moneyOwed, analytics, budget] = primaryNav;
 
   return (
     <nav
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-tabbar border-t border-border bg-surface shadow-nav pb-[env(safe-area-inset-bottom)] md:hidden"
     >
-      <ul className="grid grid-cols-6">
+      <ul className="grid grid-cols-7">
         <li>
           <TabLink item={home} pathname={pathname} />
         </li>
         <li>
           <TabLink item={expenses} pathname={pathname} />
+        </li>
+        
+        <li>
+          <TabLink item={people} pathname={pathname} />
         </li>
         <li>
           <Link
@@ -53,13 +57,13 @@ export function BottomNav() {
           </Link>
         </li>
         <li>
-          <TabLink item={people} pathname={pathname} />
-        </li>
-        <li>
           <TabLink item={moneyOwed} pathname={pathname} />
         </li>
         <li>
           <TabLink item={analytics} pathname={pathname} />
+        </li>
+        <li>
+          <TabLink item={budget} pathname={pathname} />
         </li>
       </ul>
     </nav>
